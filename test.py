@@ -34,8 +34,9 @@ def get_eer(checkpoint_path='model_epoch7.pth'):
     file2_embeddings = list(map(lambda x: test_dataset.get_embedding(os.path.join(test_path,x)),\
                             file2))
     cos_sims = [cosine_similarity(file1_embeddings[i][0], file2_embeddings[i][0]) for i in range(len(file1))]
-    fpr, tpr, _ = metrics.roc_curve(labels, cos_sims, pos_label=1)
+    fpr, tpr, threshold = metrics.roc_curve(labels, cos_sims, pos_label=1)
     eer = brentq(lambda x: 1. - x - interp1d(fpr, tpr)(x), 0., 1.)
+    print('Threshold type:'+ type(threshold))
     print('EER:'+str(eer))
 
 def cosine_similarity(a, b):
