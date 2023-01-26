@@ -30,14 +30,6 @@ class TrainDataset(Dataset):
         speaker_id, wav_path = self.speaker_wav_paths[idx]
         wav, sr = sf.read(wav_path)
         # wav, sr = librosa.load(wav_path, sr=None)
-        
-        # 아래 지워도 됨
-        # S = librosa.feature.melspectrogram(y=wav,sr=sr,n_mels=13,fmax=sr/2)
-        # if S.shape[1] >= 237: # mel spectrogram에서 x축 237개 포인트로 제한
-        #     S = S[:,:237]
-        # else:
-        #     S = np.c_[S,S[:,:237-S.shape[1]]]
-
 
         # 4초만 가져오기
         frames = 16000*4

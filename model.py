@@ -18,7 +18,7 @@ class DvectorModel(nn.Module):
                 ),
             )
         
-        self.ReLU = nn.ReLU()
+        self.activation = nn.ReLU()
         self.linear1 = nn.Linear(13*401,embedding_size)
         self.batchnorm1 = nn.BatchNorm1d(embedding_size)
         self.linear2 = nn.Linear(embedding_size, embedding_size)
@@ -31,9 +31,9 @@ class DvectorModel(nn.Module):
     def forward(self,x):
         x = self.torchfbank(x)
         x = torch.flatten(x, start_dim=1)
-        x = self.ReLU(self.batchnorm1(self.linear1(x)))
-        x = self.ReLU(self.batchnorm2(self.linear2(x)))
-        speaker_embedding = self.ReLU(self.batchnorm3(self.linear3(x)))
+        x = self.activation(self.batchnorm1(self.linear1(x)))
+        x = self.activation(self.batchnorm2(self.linear2(x)))
+        speaker_embedding = self.activation(self.batchnorm3(self.linear3(x)))
         x = self.batchnorm4(self.linear4(speaker_embedding))
         return speaker_embedding, x
     
