@@ -29,11 +29,10 @@ def main():
     except:
         start_epoch = 0
         model = DvectorModel(embedding_size=embedding_size, class_size=classes).to(device)
-    epochs = 100
+    epochs = 20
     batch_size = 512
     loss_fn = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    decay_rate = 0.9
 
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
     wandb.init(project='dvector-original', entity='dvector')

@@ -46,6 +46,7 @@ def get_eer(model):
     model.to(device)
     model.eval()
     test_dataset = TestDataset(model=model,data_path=test_path,device=device)
+    
     trial_data_list = pd.read_csv(trial_path,names=['positive','file1','file2'],sep=' ')
     labels = trial_data_list.positive
     file1 = list(trial_data_list.file1)
@@ -54,6 +55,8 @@ def get_eer(model):
                             file1))
     file2_embeddings = list(map(lambda x: test_dataset.get_embedding(os.path.join(test_path,x)),\
                             file2))
+
+
     cos_sims = [cosine_similarity(file1_embeddings[i][0], file2_embeddings[i][0]) for i in range(len(file1))]
     fpr, tpr, thresholds = metrics.roc_curve(labels, cos_sims, pos_label=1)
     eer = brentq(lambda x: 1. - x - interp1d(fpr, tpr)(x), 0., 1.)

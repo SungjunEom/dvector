@@ -33,7 +33,8 @@ class DvectorModel(nn.Module):
         x = torch.flatten(x, start_dim=1)
         x = self.activation(self.batchnorm1(self.linear1(x)))
         x = self.activation(self.batchnorm2(self.linear2(x)))
-        speaker_embedding = self.activation(self.batchnorm3(self.linear3(x)))
+        speaker_embedding = self.linear3(x)
+        x = self.activation(self.batchnorm3(speaker_embedding))
         x = self.batchnorm4(self.linear4(speaker_embedding))
         return speaker_embedding, x
     
