@@ -20,7 +20,6 @@ class DvectorModel(nn.Module):
         
         self.ReLU = nn.ReLU()
         self.linear1 = nn.Linear(13*401,embedding_size)
-        
         self.batchnorm1 = nn.BatchNorm1d(embedding_size)
         self.linear2 = nn.Linear(embedding_size, embedding_size)
         self.batchnorm2 = nn.BatchNorm1d(embedding_size)
@@ -35,8 +34,7 @@ class DvectorModel(nn.Module):
         x = self.ReLU(self.batchnorm1(self.linear1(x)))
         x = self.ReLU(self.batchnorm2(self.linear2(x)))
         speaker_embedding = self.ReLU(self.batchnorm3(self.linear3(x)))
-        x = self.linear4(speaker_embedding)
-        x = self.batchnorm4(x)
+        x = self.batchnorm4(self.linear4(speaker_embedding))
         return speaker_embedding, x
     
 if __name__ == '__main__':

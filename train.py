@@ -30,7 +30,7 @@ def main():
         start_epoch = 0
         model = DvectorModel(embedding_size=embedding_size, class_size=classes).to(device)
     epochs = 100
-    batch_size = 1024
+    batch_size = 512
     loss_fn = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 

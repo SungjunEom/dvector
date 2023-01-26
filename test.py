@@ -37,7 +37,7 @@ def get_enroll(checkpoint_path,audio_file):
     return x
 
 
-def get_eer(checkpoint_path='model_epoch7.pth'):
+def get_eer(checkpoint_path):
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
     test_path = '/data/VoxCeleb1/test'
     # device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
@@ -55,10 +55,13 @@ def get_eer(checkpoint_path='model_epoch7.pth'):
     file2_embeddings = list(map(lambda x: test_dataset.get_embedding(os.path.join(test_path,x)),\
                             file2))
     cos_sims = [cosine_similarity(file1_embeddings[i][0], file2_embeddings[i][0]) for i in range(len(file1))]
-    fpr, tpr, threshold = metrics.roc_curve(labels, cos_sims, pos_label=1)
+    fpr, tpr, thresholds = metrics.roc_curve(labels, cos_sims, pos_label=1)
     eer = brentq(lambda x: 1. - x - interp1d(fpr, tpr)(x), 0., 1.)
-    print('Threshold shape:'+ str(threshold.shape))
-    print('EER:'+str(eer))
+    thresh = interp1d(fpr,thresholds)(eer)
+
+    # 디버깅용
+    print('Threshold: '+ str(thresh))
+    print('EER: '+str(eer))
 
 def cosine_similarity(a, b):
     return dot(a,b) / (norm(a)*norm(b))
