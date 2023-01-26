@@ -37,12 +37,12 @@ def get_enroll(checkpoint_path,audio_file):
     return x
 
 
-def get_eer(checkpoint_path):
+def get_eer(model):
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
     test_path = '/data/VoxCeleb1/test'
-    # device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
-    device = torch.device('cpu')
-    model = torch.load(checkpoint_path)
+    device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
+    # device = torch.device('cpu')
+    # model = torch.load(checkpoint_path)
     model.to(device)
     model.eval()
     test_dataset = TestDataset(model=model,data_path=test_path,device=device)
@@ -59,7 +59,6 @@ def get_eer(checkpoint_path):
     eer = brentq(lambda x: 1. - x - interp1d(fpr, tpr)(x), 0., 1.)
     thresh = interp1d(fpr,thresholds)(eer)
 
-    # 디버깅용
     print('Threshold: '+ str(thresh))
     print('EER: '+str(eer))
 

@@ -61,7 +61,8 @@ def main():
             wandb.log({"loss":loss})
         checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
         torch.save(model,checkpoint_path)
-        eer = get_eer(checkpoint_path=checkpoint_path)
+        # eer = get_eer(checkpoint_path=checkpoint_path)
+        eer = get_eer(model)
         wandb.log({"eer": eer})
 
 

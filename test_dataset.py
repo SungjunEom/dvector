@@ -25,7 +25,8 @@ class TestDataset():
                     wav = np.append(wav,np.zeros(frames - wav.shape[0]))
                 x = torch.FloatTensor(wav).to(device)
                 x = torch.unsqueeze(x,0)
-                self.speaker_wav_paths[wav_path], _ = model(x)
+                x, _ = model(x)
+                self.speaker_wav_paths[wav_path] = x.cpu()
 
     def __len__(self):
         len(self.speaker_wav_paths)
