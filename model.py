@@ -35,7 +35,7 @@ class DvectorModel(nn.Module):
         x = self.activation(self.batchnorm2(self.linear2(x)))
         speaker_embedding = self.linear3(x)
         x = self.activation(self.batchnorm3(speaker_embedding))
-        x = self.batchnorm4(self.linear4(speaker_embedding))
+        x = self.batchnorm4(self.linear4(x))
         return speaker_embedding, x
     
 if __name__ == '__main__':
