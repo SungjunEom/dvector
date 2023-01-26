@@ -16,6 +16,27 @@ import pandas as pd
 from model import DvectorModel
 from test_dataset import TestDataset
 
+def score():
+    pass
+
+def get_enroll(checkpoint_path,audio_file):
+    if wav.shape[0] >= 16000*4:
+        start = random.randrange(0,wav.shape[0] - frames + 1)
+        wav = wav[start:start+frames]
+    else:
+        # start = random.randrange(0, frames - wav.shape[0] + 1)
+        # wav = np.append(wav,wav[:start+frames])
+        wav = np.append(wav,np.zeros(frames - wav.shape[0]))
+    device = torch.device('cpu')
+    model = torch.load(checkpoint_path)
+    model.to(device)
+    model.eval()
+    x = torch.FloatTensor(wav).to(device)
+    x = torch.unsqueeze(x,0)
+    x, _ = model(x)
+    return x
+
+
 def get_eer(checkpoint_path='model_epoch7.pth'):
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
     test_path = '/data/VoxCeleb1/test'
@@ -36,7 +57,7 @@ def get_eer(checkpoint_path='model_epoch7.pth'):
     cos_sims = [cosine_similarity(file1_embeddings[i][0], file2_embeddings[i][0]) for i in range(len(file1))]
     fpr, tpr, threshold = metrics.roc_curve(labels, cos_sims, pos_label=1)
     eer = brentq(lambda x: 1. - x - interp1d(fpr, tpr)(x), 0., 1.)
-    print('Threshold type:'+ str(type(threshold)))
+    print('Threshold shape:'+ str(threshold.shape))
     print('EER:'+str(eer))
 
 def cosine_similarity(a, b):
