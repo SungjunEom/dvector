@@ -24,7 +24,7 @@ def main():
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 256
+    embedding_size = 128
     n_mels = 40
     try:
         start_epoch = int(sys.argv[1])
@@ -82,8 +82,8 @@ def main():
         print('Threshold: ' + str(threshold))
         print('EER: ' + str(eer))
         # wandb.log({"eer": eer})
-        # checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
-        # torch.save(model,checkpoint_path)
+    checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
+    torch.save(model,checkpoint_path)
 
 
 

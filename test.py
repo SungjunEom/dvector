@@ -43,7 +43,7 @@ def get_eer(test_dataset,test_path,trial_path):
     labels = trial_data_list.positive
     file1 = list(trial_data_list.file1)
     file2 = list(trial_data_list.file2)
-    
+
     file1_embeddings = list(map(lambda x: test_dataset.get_embedding(os.path.join(test_path,x)),\
                             file1))
     file2_embeddings = list(map(lambda x: test_dataset.get_embedding(os.path.join(test_path,x)),\
