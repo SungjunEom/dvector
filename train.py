@@ -22,7 +22,7 @@ def main():
     test_data_path = '/data/VoxCeleb1/test'
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 2048
+    embedding_size = 256
     n_mels = 40
     try:
         start_epoch = int(sys.argv[1])
@@ -30,7 +30,7 @@ def main():
     except:
         start_epoch = 0
         model = DvectorModel(embedding_size=embedding_size, class_size=classes,n_mels=n_mels).to(device)
-    epochs = 20
+    epochs = 100
     batch_size = 512
     loss_fn = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -61,7 +61,7 @@ def main():
             optimizer.step()
             # wandb.log({"loss":loss})
         checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
-        torch.save(model,checkpoint_path)
+        # torch.save(model,checkpoint_path)
         eer = get_eer(model)
         # wandb.log({"eer": eer})
 

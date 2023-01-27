@@ -42,11 +42,11 @@ class TestDataset():
                 x, _ = model(x)
                 self.speaker_wav_paths[wav_path] = x.cpu()
 
-        print(self.speaker_wav_paths['/data/VoxCeleb1/test/id10290/O-V_sInAw5M/00007.wav'])
+        # print(self.speaker_wav_paths['/data/VoxCeleb1/test/id10290/O-V_sInAw5M/00007.wav'])
 
     def __len__(self):
-        len(self.speaker_wav_paths)
-        return
+        return len(self.speaker_wav_paths)
+        
 
     # wav파일 경로를 받으면 미리 저장되어있는 임베딩을 출력함.
     def get_embedding(self,file_path):
