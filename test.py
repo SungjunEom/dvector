@@ -16,26 +16,6 @@ import pandas as pd
 from model import DvectorModel
 from test_dataset import TestDataset
 
-def score():
-    pass
-
-def enroll(checkpoint_path,audio_file):
-    if wav.shape[0] >= 16000*4:
-        start = random.randrange(0,wav.shape[0] - frames + 1)
-        wav = wav[start:start+frames]
-    else:
-        # start = random.randrange(0, frames - wav.shape[0] + 1)
-        # wav = np.append(wav,wav[:start+frames])
-        wav = np.append(wav,np.zeros(frames - wav.shape[0]))
-    device = torch.device('cpu')
-    model = torch.load(checkpoint_path)
-    model.to(device)
-    model.eval()
-    x = torch.FloatTensor(wav).to(device)
-    x = torch.unsqueeze(x,0)
-    x, _ = model(x)
-    return x
-
 
 def get_eer(test_dataset,test_path,trial_path):
     
@@ -58,3 +38,27 @@ def get_eer(test_dataset,test_path,trial_path):
 
 def cosine_similarity(a, b):
     return dot(a,b) / (norm(a)*norm(b))
+
+# 두 화자의 코사인 유사도 반환.
+# 안씀
+def score(embedding1, embedding2):
+    return cosine_similarity(embedding1, embedding2)
+
+# 오디오 파일의 임베딩 구함.
+# 안씀
+def enroll(checkpoint_path,audio_file):
+    if wav.shape[0] >= 16000*4:
+        start = random.randrange(0,wav.shape[0] - frames + 1)
+        wav = wav[start:start+frames]
+    else:
+        # start = random.randrange(0, frames - wav.shape[0] + 1)
+        # wav = np.append(wav,wav[:start+frames])
+        wav = np.append(wav,np.zeros(frames - wav.shape[0]))
+    device = torch.device('cpu')
+    model = torch.load(checkpoint_path)
+    model.to(device)
+    model.eval()
+    x = torch.FloatTensor(wav).to(device)
+    x = torch.unsqueeze(x,0)
+    x, _ = model(x)
+    return x
