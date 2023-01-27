@@ -12,6 +12,7 @@ import sys
 
 from model import DvectorModel
 from train_dataset import TrainDataset
+from test_dataset import TestDataset
 from test import get_eer
 
 def main():
@@ -20,6 +21,7 @@ def main():
     
     train_data_path = '/data/VoxCeleb1/train'
     test_data_path = '/data/VoxCeleb1/test'
+    trial_path = '/data/VoxCeleb1/trials/trials.txt'
     classes = 1211
     learning_rate = 0.001
     embedding_size = 256
@@ -34,6 +36,7 @@ def main():
     batch_size = 512
     loss_fn = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
 
     # os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
     # wandb.init(project='dvector-original', entity='dvector')
@@ -46,9 +49,17 @@ def main():
     # wandb.define_metric("loss")
     # wandb.define_metric("eer")
 
-    train_data = TrainDataset(train_data_path)
+    # speaker_id to label 딕셔너리를 만듦.
+    speaker_ids = list(map(lambda x:int(x.split('id1')[1]), os.listdir(train_data_path)))
+    speaker_ids.sort()
+    labels = [i for i in range(len(speaker_ids))]
+    speaker_ids_to_labels = {speaker_ids[i]:labels[i] for i in range(len(speaker_ids))}
+    print(f'speakers: {len(speaker_ids)}')
+
+    train_data = TrainDataset(train_data_path,speaker_ids_to_labels)
     train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=4)
-    
+    test_data = TestDataset(test_data_path)
+
     for epoch in range(epochs):
         model.train()
         for (X, y) in tqdm(train_dataloader):
@@ -60,10 +71,19 @@ def main():
             loss.backward()
             optimizer.step()
             # wandb.log({"loss":loss})
-        checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
-        # torch.save(model,checkpoint_path)
-        eer = get_eer(model)
+        if epoch % 10 == 0:
+            scheduler.step()
+        test_data.update_embeddings(model,embedding_size,device)
+        eer, threshold = get_eer(
+            test_dataset=test_data,
+            test_path=test_data_path,
+            trial_path=trial_path
+            )
+        print('Threshold: ' + str(threshold))
+        print('EER: ' + str(eer))
         # wandb.log({"eer": eer})
+        # checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
+        # torch.save(model,checkpoint_path)
 
 
 

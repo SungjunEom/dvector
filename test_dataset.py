@@ -7,7 +7,7 @@ import soundfile as sf
 import random
 
 class TestDataset():
-    def __init__(self, model, data_path,device):
+    def __init__(self, data_path):
         self.root_dir = data_path
 
         # test데이터셋에 있는 wav파일 목록을 가져와서
@@ -24,25 +24,30 @@ class TestDataset():
                 for wav in wavs:
                     full_path = os.path.join(wav_path, wav)
                     self.speaker_wav_paths[full_path] = None
+
+    def update_embeddings(self,model,embedding_size,device):
         
-        # test데이터셋에 있는 wav를 4초 자른 뒤 모델에 통과시키고
-        # 나온 임베딩을 speaker_wav_paths의 값으로 함.
+        # test데이터셋에 있는 wav를 4초 자름.
+        # wav크기가 20이상이 대부분이므로 하나의 wav에서
+        # 5개의 랜덤 구간에 대한 평균 임베딩을 구함
+        sample_num = 5
         model.eval()
         with torch.no_grad():
             for wav_path in self.speaker_wav_paths:
                 wav, sr = sf.read(wav_path)
                 frames = 16000*4
-                if wav.shape[0] >= frames:
-                    start = random.randrange(0,wav.shape[0] - frames + 1)
-                    wav = wav[start:start+frames]
-                else:
-                    wav = np.append(wav,np.zeros(frames - wav.shape[0]))
-                x = torch.FloatTensor(wav).to(device)
-                x = torch.unsqueeze(x,0)
-                x, _ = model(x)
-                self.speaker_wav_paths[wav_path] = x.cpu()
-
-        # print(self.speaker_wav_paths['/data/VoxCeleb1/test/id10290/O-V_sInAw5M/00007.wav'])
+                temp_embedding = torch.zeros(1,embedding_size)
+                for i in range(sample_num):
+                    if wav.shape[0] >= frames:
+                        start = random.randrange(0,wav.shape[0] - frames + 1)
+                        wav = wav[start:start+frames]
+                    else:
+                        wav = np.append(wav,np.zeros(frames - wav.shape[0]))
+                    x = torch.FloatTensor(wav).to(device)
+                    x = torch.unsqueeze(x,0)
+                    x, _ = model(x)
+                    temp_embedding += x.cpu()
+                self.speaker_wav_paths[wav_path] = temp_embedding / sample_num
 
     def __len__(self):
         return len(self.speaker_wav_paths)

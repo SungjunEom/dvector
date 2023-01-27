@@ -37,37 +37,24 @@ def get_enroll(checkpoint_path,audio_file):
     return x
 
 
-def get_eer(model):
-    trial_path = '/data/VoxCeleb1/trials/trials.txt'
-    test_path = '/data/VoxCeleb1/test'
-    device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
-    model.to(device)
-    model.eval()
-    test_dataset = TestDataset(model=model,data_path=test_path,device=device)
+def get_eer(test_dataset,test_path,trial_path):
     
     trial_data_list = pd.read_csv(trial_path,names=['positive','file1','file2'],sep=' ')
     labels = trial_data_list.positive
     file1 = list(trial_data_list.file1)
     file2 = list(trial_data_list.file2)
+    
     file1_embeddings = list(map(lambda x: test_dataset.get_embedding(os.path.join(test_path,x)),\
                             file1))
     file2_embeddings = list(map(lambda x: test_dataset.get_embedding(os.path.join(test_path,x)),\
                             file2))
 
-
     cos_sims = [cosine_similarity(file1_embeddings[i][0], file2_embeddings[i][0]) for i in range(len(file1))]
     fpr, tpr, thresholds = metrics.roc_curve(labels, cos_sims, pos_label=1)
     eer = brentq(lambda x: 1. - x - interp1d(fpr, tpr)(x), 0., 1.)
-    thresh = interp1d(fpr,thresholds)(eer)
+    threshold = interp1d(fpr,thresholds)(eer)
 
-    print('Threshold: '+ str(thresh))
-    print('EER: '+str(eer))
+    return eer, threshold
 
 def cosine_similarity(a, b):
     return dot(a,b) / (norm(a)*norm(b))
-
-def main():
-    get_eer()
-
-if __name__ == '__main__':
-    main()
