@@ -24,7 +24,7 @@ def main():
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 128
+    embedding_size = 512
     n_mels = 40
     try:
         start_epoch = int(sys.argv[1])
