@@ -19,22 +19,25 @@ def main():
     device = torch.device('cuda:1' if torch.cuda.is_available() else print('No GPU'))
     print(device)
     
+    # data paths
     train_data_path = '/data/VoxCeleb1/train'
     test_data_path = '/data/VoxCeleb1/test'
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
+
+    # conditions and hyperparameters
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 256
+    embedding_size = 512
     n_mels = 40
+    epochs = 100
+    batch_size = 512
+    loss_fn = nn.CrossEntropyLoss().to(device)
     try:
         start_epoch = int(sys.argv[1])
         model = torch.load('model_epoch'+str(start_epoch)+'.pth').to(device)
     except:
         start_epoch = 0
         model = DvectorModel(embedding_size=embedding_size, class_size=classes,n_mels=n_mels).to(device)
-    epochs = 100
-    batch_size = 512
-    loss_fn = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
 
