@@ -3,7 +3,7 @@ import torch
 import torchaudio
 
 class DvectorModel(nn.Module):
-    def __init__(self, embedding_size=1024,class_size=1211):
+    def __init__(self, embedding_size=1024,class_size=1211,n_mels=13):
         super().__init__()
         self.torchfbank = torch.nn.Sequential(         
             torchaudio.transforms.MelSpectrogram(
@@ -14,12 +14,12 @@ class DvectorModel(nn.Module):
                 f_min = 20, 
                 f_max = 7600, 
                 window_fn=torch.hamming_window, 
-                n_mels=13
+                n_mels=n_mels
                 ),
             )
         
         self.activation = nn.ReLU()
-        self.linear1 = nn.Linear(13*401,embedding_size)
+        self.linear1 = nn.Linear(n_mels*401,embedding_size)
         self.batchnorm1 = nn.BatchNorm1d(embedding_size)
         self.linear2 = nn.Linear(embedding_size, embedding_size)
         self.batchnorm2 = nn.BatchNorm1d(embedding_size)
@@ -42,4 +42,4 @@ if __name__ == '__main__':
     from torchsummary import summary
     device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
     model = DvectorModel().to(device)
-    summary(model, input_size=(13*401,), device=device)
+    summary(model, input_size=(n_mels*401,), device=device)

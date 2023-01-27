@@ -41,8 +41,6 @@ def get_eer(model):
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
     test_path = '/data/VoxCeleb1/test'
     device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
-    # device = torch.device('cpu')
-    # model = torch.load(checkpoint_path)
     model.to(device)
     model.eval()
     test_dataset = TestDataset(model=model,data_path=test_path,device=device)
