@@ -24,7 +24,7 @@ def main():
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 512
+    embedding_size = 256
     n_mels = 40
     try:
         start_epoch = int(sys.argv[1])
@@ -38,6 +38,7 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
 
+    # wandb 설정
     # os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
     # wandb.init(project='dvector-original', entity='dvector')
     # wandb.config = {
@@ -45,7 +46,6 @@ def main():
     #     "epochs" : epochs,
     #     "batch_size" : batch_size
     # }
-
     # wandb.define_metric("loss")
     # wandb.define_metric("eer")
 

@@ -19,7 +19,7 @@ from test_dataset import TestDataset
 def score():
     pass
 
-def get_enroll(checkpoint_path,audio_file):
+def enroll(checkpoint_path,audio_file):
     if wav.shape[0] >= 16000*4:
         start = random.randrange(0,wav.shape[0] - frames + 1)
         wav = wav[start:start+frames]
