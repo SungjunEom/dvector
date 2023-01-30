@@ -27,7 +27,7 @@ def main():
     # conditions and hyperparameters
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 64
+    embedding_size = 128
     n_mels = 40
     epochs = 200
     batch_size = 512
@@ -43,7 +43,7 @@ def main():
 
     # wandb 설정
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-v5-swish-triangle', entity='dvector')
+    wandb.init(project='dvector-original-v6-swish-triangle-2', entity='dvector')
     wandb.config = {
         "learning_rate" : learning_rate,
         "epochs" : epochs,
@@ -64,6 +64,7 @@ def main():
     test_data = TestDataset(test_data_path)
 
     for epoch in range(epochs):
+        print('Epoch: ' + str(epoch+1))
         model.train()
         for (X, y) in tqdm(train_dataloader):
             optimizer.zero_grad()
