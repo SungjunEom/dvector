@@ -27,9 +27,9 @@ def main():
     # conditions and hyperparameters
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 512
+    embedding_size = 128
     n_mels = 40
-    epochs = 100
+    epochs = 200
     batch_size = 512
     loss_fn = nn.CrossEntropyLoss().to(device)
     try:
@@ -42,15 +42,15 @@ def main():
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
 
     # wandb 설정
-    # os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    # wandb.init(project='dvector-original', entity='dvector')
-    # wandb.config = {
-    #     "learning_rate" : learning_rate,
-    #     "epochs" : epochs,
-    #     "batch_size" : batch_size
-    # }
-    # wandb.define_metric("loss")
-    # wandb.define_metric("eer")
+    os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
+    wandb.init(project='dvector-original', entity='dvector')
+    wandb.config = {
+        "learning_rate" : learning_rate,
+        "epochs" : epochs,
+        "batch_size" : batch_size
+    }
+    wandb.define_metric("loss")
+    wandb.define_metric("eer")
 
     # speaker_id to label 딕셔너리를 만듦.
     speaker_ids = list(map(lambda x:int(x.split('id1')[1]), os.listdir(train_data_path)))
@@ -73,7 +73,7 @@ def main():
             loss = loss_fn(pred, y)
             loss.backward()
             optimizer.step()
-            # wandb.log({"loss":loss})
+            wandb.log({"loss":loss})
         if epoch % 10 == 0:
             scheduler.step()
         test_data.update_embeddings(model,embedding_size,device)
@@ -84,7 +84,7 @@ def main():
             )
         print('Threshold: ' + str(threshold))
         print('EER: ' + str(eer))
-        # wandb.log({"eer": eer})
+        wandb.log({"eer": eer})
     checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
     torch.save(model,checkpoint_path)
 

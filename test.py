@@ -12,6 +12,7 @@ from sklearn import metrics
 from scipy.optimize import brentq
 from scipy.interpolate import interp1d
 import pandas as pd
+import sys
 
 from model import DvectorModel
 from test_dataset import TestDataset
@@ -62,3 +63,18 @@ def enroll(checkpoint_path,audio_file):
     x = torch.unsqueeze(x,0)
     x, _ = model(x)
     return x
+
+if __name__ == '__main__':
+    train_data_path = '/data/VoxCeleb1/train'
+    test_data_path = '/data/VoxCeleb1/test'
+    trial_path = '/data/VoxCeleb1/trials/trials.txt'
+    
+    device = torch.device('cuda:1' if torch.cuda.is_available() else print('No GPU'))
+    checkpoint_path = sys.argv[1]
+    model = torch.load(checkpoint_path).to(device)
+    test_data = TestDataset(test_data_path)
+    test_data.update_embeddings(model,128,device)
+
+    eer, threshold = get_eer(test_data,test_data_path,trial_path)
+    print('EER: '+str(eer))
+    print('Threshold: '+str(threshold))
