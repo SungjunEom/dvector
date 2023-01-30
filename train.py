@@ -85,6 +85,8 @@ def main():
         print('Threshold: ' + str(threshold))
         print('EER: ' + str(eer))
         wandb.log({"eer": eer})
+        if epoch % 100 == 0:
+            checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'            
     checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
     torch.save(model,checkpoint_path)
 
