@@ -43,7 +43,7 @@ def main():
 
     # wandb 설정
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-v6-swish-triangle-2', entity='dvector')
+    wandb.init(project='dvector-original-s2v1', entity='dvector')
     wandb.config = {
         "learning_rate" : learning_rate,
         "epochs" : epochs,

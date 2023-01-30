@@ -29,7 +29,7 @@ class TestDataset():
         
         # test데이터셋에 있는 wav를 4초 자름.
         # wav크기가 20이상이 대부분이므로 하나의 wav에서
-        # 5개의 랜덤 구간에 대한 평균 임베딩을 구함
+        # 5개의 구간에 대한 평균 임베딩을 구함
         sample_num = 5
         model.eval()
         with torch.no_grad():
@@ -37,13 +37,14 @@ class TestDataset():
                 wav, sr = sf.read(wav_path)
                 frames = 16000*4
                 temp_embedding = torch.zeros(1,embedding_size)
-                for i in range(sample_num):
+                fragments = np.linspace(0, wav.shape[0]-frames,5)
+                fragments = fragments.astype(np.int64)
+                for fragment in fragments:
                     if wav.shape[0] >= frames:
-                        start = random.randrange(0,wav.shape[0] - frames + 1)
-                        wav = wav[start:start+frames]
+                        wav2 = wav[fragment:fragment+frames]
                     else:
-                        wav = np.append(wav,np.zeros(frames - wav.shape[0]))
-                    x = torch.FloatTensor(wav).to(device)
+                        wav2 = np.append(wav,np.zeros(frames - wav.shape[0]))
+                    x = torch.FloatTensor(wav2).to(device)
                     x = torch.unsqueeze(x,0)
                     x, _ = model(x)
                     temp_embedding += x.cpu()

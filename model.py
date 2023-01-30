@@ -8,23 +8,23 @@ class DvectorModel(nn.Module):
         self.torchfbank = torchaudio.transforms.MelSpectrogram(
                 sample_rate=16000, 
                 n_fft=512, 
-                win_length=400, 
+                win_length=512, 
                 hop_length=160, 
                 f_min = 20, 
-                f_max = 8000, 
+                f_max = None, 
                 window_fn=torch.hamming_window, 
                 n_mels=n_mels
                 )
         
         self.activation = Swish()
-        self.linear1 = nn.Linear(n_mels*401,embedding_size*8)
-        self.linear2 = nn.Linear(embedding_size*8, embedding_size*4)
-        self.linear3 = nn.Linear(embedding_size*4, embedding_size*2)
-        self.linear4 = nn.Linear(embedding_size*2, embedding_size)
+        self.linear1 = nn.Linear(n_mels*401,embedding_size)
+        self.linear2 = nn.Linear(embedding_size, embedding_size)
+        self.linear3 = nn.Linear(embedding_size, embedding_size)
+        self.linear4 = nn.Linear(embedding_size, embedding_size)
         self.linear5 = nn.Linear(embedding_size, class_size)
-        self.batchnorm1 = nn.BatchNorm1d(embedding_size*8)
-        self.batchnorm2 = nn.BatchNorm1d(embedding_size*4)
-        self.batchnorm3 = nn.BatchNorm1d(embedding_size*2)
+        self.batchnorm1 = nn.BatchNorm1d(embedding_size)
+        self.batchnorm2 = nn.BatchNorm1d(embedding_size)
+        self.batchnorm3 = nn.BatchNorm1d(embedding_size)
         self.batchnorm4 = nn.BatchNorm1d(embedding_size)
         self.dropout3 = nn.Dropout(p=0.5)
         self.dropout4 = nn.Dropout(p=0.5)
