@@ -27,7 +27,7 @@ def main():
     # conditions and hyperparameters
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 256
+    embedding_size = 128
     n_mels = 40
     epochs = 200
     batch_size = 512
@@ -43,7 +43,7 @@ def main():
 
     # wandb 설정
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-v3', entity='dvector')
+    wandb.init(project='dvector-original-v4-swish', entity='dvector')
     wandb.config = {
         "learning_rate" : learning_rate,
         "epochs" : epochs,

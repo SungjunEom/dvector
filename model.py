@@ -16,7 +16,7 @@ class DvectorModel(nn.Module):
                 n_mels=n_mels
                 )
         
-        self.activation = nn.ReLU()
+        self.activation = Swish()
         self.linear1 = nn.Linear(n_mels*401,embedding_size)
         self.linear2 = nn.Linear(embedding_size, embedding_size)
         self.linear3 = nn.Linear(embedding_size, embedding_size)
@@ -38,3 +38,11 @@ class DvectorModel(nn.Module):
         speaker_embedding = self.dropout4(self.activation(self.batchnorm4(self.linear4(x))))
         x = self.linear5(speaker_embedding)
         return speaker_embedding, x
+
+class Swish(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.sigmoid = nn.Sigmoid()
+    
+    def forward(self,x):
+        return x*self.sigmoid(x)
