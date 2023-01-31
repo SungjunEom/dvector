@@ -3,6 +3,7 @@ import torch
 import torchaudio
 
 class DvectorModel(nn.Module):
+<<<<<<< HEAD
     def __init__(
         self, 
         embedding_size=1024,
@@ -10,6 +11,9 @@ class DvectorModel(nn.Module):
         n_mels=13
         ):
 
+=======
+    def __init__(self, embedding_size=1024,class_size=1211,n_mels=13):
+>>>>>>> parent of c5e31f9... s2v3 preemphasis추가했으나 eer이 안좋음&vectorization완벽히 못함
         super().__init__()
         self.torchfbank = torchaudio.transforms.MelSpectrogram(
                 sample_rate=16000, 
@@ -17,10 +21,11 @@ class DvectorModel(nn.Module):
                 win_length=512, 
                 hop_length=160, 
                 f_min = 20, 
-                f_max = 8000, 
+                f_max = None, 
                 window_fn=torch.hamming_window, 
                 n_mels=n_mels
                 )
+        
         self.activation = Swish()
         self.maxpool1d = nn.MaxPool1d(2)
         self.linear1 = nn.Linear(n_mels*401,embedding_size*16)
@@ -51,6 +56,10 @@ class Swish(nn.Module):
         self.sigmoid = nn.Sigmoid()
     
     def forward(self,x):
+<<<<<<< HEAD
         return x*self.sigmoid(x)
     
     
+=======
+        return x*self.sigmoid(x)
+>>>>>>> parent of c5e31f9... s2v3 preemphasis추가했으나 eer이 안좋음&vectorization완벽히 못함

@@ -27,29 +27,32 @@ def main():
     # conditions and hyperparameters
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 64
+    embedding_size = 32
     n_mels = 40
     epochs = 300
     batch_size = 512
     loss_fn = nn.CrossEntropyLoss().to(device)
-
     try:
         start_epoch = int(sys.argv[1])
         model = torch.load('model_epoch'+str(start_epoch)+'.pth').to(device)
     except:
         start_epoch = 0
+<<<<<<< HEAD
         model = DvectorModel(
             embedding_size=embedding_size, 
             class_size=classes,
             n_mels=n_mels
             ).to(device)
 
+=======
+        model = DvectorModel(embedding_size=embedding_size, class_size=classes,n_mels=n_mels).to(device)
+>>>>>>> parent of c5e31f9... s2v3 preemphasis추가했으나 eer이 안좋음&vectorization완벽히 못함
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
 
     # wandb 설정
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-s2v3', entity='dvector')
+    wandb.init(project='dvector-original-s2v2', entity='dvector')
     wandb.config = {
         "learning_rate" : learning_rate,
         "epochs" : epochs,
