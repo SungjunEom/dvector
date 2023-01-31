@@ -25,7 +25,6 @@ def main():
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
 
     # conditions and hyperparameters
-    preemphasis_alpha = 0.95
     classes = 1211
     learning_rate = 0.001
     embedding_size = 64
@@ -42,9 +41,7 @@ def main():
         model = DvectorModel(
             embedding_size=embedding_size, 
             class_size=classes,
-            n_mels=n_mels, 
-            preemphasis_alpha=preemphasis_alpha,
-            device=device
+            n_mels=n_mels
             ).to(device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
