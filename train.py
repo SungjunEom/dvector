@@ -38,12 +38,16 @@ def main():
     except:
         start_epoch = 0
 <<<<<<< HEAD
+<<<<<<< HEAD
         model = DvectorModel(
             embedding_size=embedding_size, 
             class_size=classes,
             n_mels=n_mels
             ).to(device)
 
+=======
+        model = DvectorModel(embedding_size=embedding_size, class_size=classes,n_mels=n_mels).to(device)
+>>>>>>> parent of c5e31f9... s2v3 preemphasis추가했으나 eer이 안좋음&vectorization완벽히 못함
 =======
         model = DvectorModel(embedding_size=embedding_size, class_size=classes,n_mels=n_mels).to(device)
 >>>>>>> parent of c5e31f9... s2v3 preemphasis추가했으나 eer이 안좋음&vectorization완벽히 못함

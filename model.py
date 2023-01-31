@@ -4,6 +4,7 @@ import torchaudio
 
 class DvectorModel(nn.Module):
 <<<<<<< HEAD
+<<<<<<< HEAD
     def __init__(
         self, 
         embedding_size=1024,
@@ -11,6 +12,9 @@ class DvectorModel(nn.Module):
         n_mels=13
         ):
 
+=======
+    def __init__(self, embedding_size=1024,class_size=1211,n_mels=13):
+>>>>>>> parent of c5e31f9... s2v3 preemphasis추가했으나 eer이 안좋음&vectorization완벽히 못함
 =======
     def __init__(self, embedding_size=1024,class_size=1211,n_mels=13):
 >>>>>>> parent of c5e31f9... s2v3 preemphasis추가했으나 eer이 안좋음&vectorization완벽히 못함
@@ -57,9 +61,13 @@ class Swish(nn.Module):
     
     def forward(self,x):
 <<<<<<< HEAD
+<<<<<<< HEAD
         return x*self.sigmoid(x)
     
     
+=======
+        return x*self.sigmoid(x)
+>>>>>>> parent of c5e31f9... s2v3 preemphasis추가했으나 eer이 안좋음&vectorization완벽히 못함
 =======
         return x*self.sigmoid(x)
 >>>>>>> parent of c5e31f9... s2v3 preemphasis추가했으나 eer이 안좋음&vectorization완벽히 못함
