@@ -8,13 +8,8 @@ class DvectorModel(nn.Module):
         embedding_size=1024,
         class_size=1211,
         n_mels=13,
-        preemphasis_alpha=0.95,
-        device='cuda:1'
         ):
-
         super().__init__()
-        self.device = device
-        self.preemphasis_alpha = preemphasis_alpha
         self.torchfbank = torchaudio.transforms.MelSpectrogram(
                 sample_rate=16000, 
                 n_fft=512, 
@@ -41,7 +36,6 @@ class DvectorModel(nn.Module):
         self.dropout4 = nn.Dropout(p=0.5)
     
     def forward(self,x):
-        x = self.preemphasis(x,self.preemphasis_alpha)
         x = self.torchfbank(x)
         x = torch.flatten(x, start_dim=1)
         x = self.maxpool1d(self.activation(self.batchnorm1(self.linear1(x))).unsqueeze(1)).squeeze(1)
@@ -50,18 +44,6 @@ class DvectorModel(nn.Module):
         speaker_embedding = self.maxpool1d(self.dropout4(self.activation(self.batchnorm4(self.linear4(x)))).unsqueeze(1)).squeeze(1)
         x = self.linear5(speaker_embedding)
         return speaker_embedding, x
-
-    def preemphasis(self,x,alpha):
-        with torch.no_grad():
-            multiplier = torch.tensor([1,-alpha]).to(self.device)
-            m, n = x.shape
-            new_x = torch.zeros((2*m,n),dtype=x.dtype).to(self.device)
-            new_x[1::2,:] = x
-            new_x[::2,:] = torch.cat((torch.zeros((m,1),dtype=x.dtype).to(self.device),x[:,:-1]),1)
-            out = torch.zeros((m,n),dtype=x.dtype).to(self.device)
-            for i in range(m):
-                out[i,:] = torch.matmul(multiplier,new_x[i:i+2,:])
-            return out
 
 class Swish(nn.Module):
     def __init__(self):

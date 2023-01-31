@@ -25,7 +25,6 @@ def main():
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
 
     # conditions and hyperparameters
-    preemphasis_alpha = 0.95
     classes = 1211
     learning_rate = 0.001
     embedding_size = 64
@@ -42,8 +41,6 @@ def main():
             embedding_size=embedding_size, 
             class_size=classes,
             n_mels=n_mels,
-            preemphasis_alpha=preemphasis_alpha,
-            device=device
             ).to(device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -51,7 +48,7 @@ def main():
 
     # wandb 설정
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-s2v4', entity='dvector')
+    wandb.init(project='dvector-original-s2v5', entity='dvector')
     wandb.config = {
         "learning_rate" : learning_rate,
         "epochs" : epochs,
