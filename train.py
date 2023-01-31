@@ -27,9 +27,9 @@ def main():
     # conditions and hyperparameters
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 128
+    embedding_size = 32
     n_mels = 40
-    epochs = 200
+    epochs = 300
     batch_size = 512
     loss_fn = nn.CrossEntropyLoss().to(device)
     try:
@@ -43,7 +43,7 @@ def main():
 
     # wandb 설정
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-s2v1', entity='dvector')
+    wandb.init(project='dvector-original-s2v2', entity='dvector')
     wandb.config = {
         "learning_rate" : learning_rate,
         "epochs" : epochs,
@@ -87,7 +87,8 @@ def main():
         print('EER: ' + str(eer))
         wandb.log({"eer": eer})
         if epoch % 100 == 0:
-            checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'            
+            checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
+            torch.save(model,checkpoint_path)
     checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
     torch.save(model,checkpoint_path)
 
