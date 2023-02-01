@@ -71,9 +71,10 @@ if __name__ == '__main__':
     
     device = torch.device('cuda:1' if torch.cuda.is_available() else print('No GPU'))
     checkpoint_path = sys.argv[1]
+    embedding_size = int(sys.argv[2])
     model = torch.load(checkpoint_path).to(device)
     test_data = TestDataset(test_data_path)
-    test_data.update_embeddings(model,128,device)
+    test_data.update_embeddings(model,embedding_size,device)
 
     eer, threshold = get_eer(test_data,test_data_path,trial_path)
     print('EER: '+str(eer))
