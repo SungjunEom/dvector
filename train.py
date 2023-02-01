@@ -48,7 +48,7 @@ def train():
 
     # wandb 설정
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-s2v6', entity='dvector')
+    wandb.init(project='dvector-original-s2v7', entity='dvector')
     wandb.config = {
         "learning_rate" : learning_rate,
         "epochs" : epochs,
@@ -68,8 +68,8 @@ def train():
     train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=4)
     test_data = TestDataset(test_data_path)
 
-    for epoch in range(epochs):
-        print('Epoch: ' + str(epoch+1))
+    for epoch in range(1,epochs+1):
+        print('Epoch: ' + str(epoch))
         model.train()
         for (X, y) in tqdm(train_dataloader):
             optimizer.zero_grad()
@@ -80,7 +80,7 @@ def train():
             loss.backward()
             optimizer.step()
             wandb.log({"loss":loss})
-        if epoch % 50 == 0:
+        if epoch % 5 == 0:
             scheduler.step()
         test_data.update_embeddings(model,embedding_size,device)
         eer, threshold = get_eer(
