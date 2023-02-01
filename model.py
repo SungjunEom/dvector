@@ -16,7 +16,7 @@ class DvectorModel(nn.Module):
                 win_length=512, 
                 hop_length=160, 
                 f_min = 20, 
-                f_max = None, 
+                f_max = 8000, 
                 window_fn=torch.hamming_window, 
                 n_mels=n_mels
                 )

@@ -10,6 +10,7 @@ class TrainDataset(Dataset):
     def __init__(self, data_path, speaker_ids_to_labels):
         self.speaker_ids_to_labels = speaker_ids_to_labels
 
+        # speaker id에 대응되는 wav파일들의 path들을 모음.
         # speaker_id에 대응되는 wav파일들을 튜플로 짝짓고
         # 튜플들의 리스트를 만듦.
         # ex) [(id, 파일경로),...]
@@ -30,7 +31,7 @@ class TrainDataset(Dataset):
         speaker_id, wav_path = self.speaker_wav_paths[idx]
         wav, sr = sf.read(wav_path)
 
-        # 4초만 가져오기
+        # 4초만 랜덤으로 가져오기
         frames = 16000*4
         if wav.shape[0] >= frames:
             start = random.randrange(0,wav.shape[0] - frames + 1)

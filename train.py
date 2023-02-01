@@ -15,7 +15,7 @@ from train_dataset import TrainDataset
 from test_dataset import TestDataset
 from test import get_eer
 
-def main():
+def train():
     device = torch.device('cuda:1' if torch.cuda.is_available() else print('No GPU'))
     print(device)
     
@@ -24,7 +24,7 @@ def main():
     test_data_path = '/data/VoxCeleb1/test'
     trial_path = '/data/VoxCeleb1/trials/trials.txt'
 
-    # conditions and hyperparameters
+    # hyperparameters
     classes = 1211
     learning_rate = 0.001
     embedding_size = 64
@@ -100,4 +100,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    train()

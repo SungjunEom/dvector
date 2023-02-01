@@ -27,9 +27,9 @@ class TestDataset():
 
     def update_embeddings(self,model,embedding_size,device):
         
-        # test데이터셋에 있는 wav를 4초 자름.
-        # wav크기가 20이상이 대부분이므로 하나의 wav에서
+        # test데이터셋에 있는 wav를 4초 잘라서 5개의 구간을 만들고
         # 5개의 구간에 대한 평균 임베딩을 구함
+        # (wav크기가 20이상이 대부분이므로)
         sample_num = 5
         model.eval()
         with torch.no_grad():
