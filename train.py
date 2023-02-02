@@ -27,7 +27,7 @@ def train():
     # hyperparameters
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 128
+    embedding_size = 64
     n_mels = 40
     epochs = 150
     batch_size = 512
@@ -48,7 +48,7 @@ def train():
 
     # wandb 설정
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-s2v10', entity='dvector')
+    wandb.init(project='dvector-original-s2v11', entity='dvector')
     wandb.config = {
         "learning_rate" : learning_rate,
         "epochs" : epochs,
@@ -80,7 +80,7 @@ def train():
             loss.backward()
             optimizer.step()
             wandb.log({"loss":loss})
-        if epoch % 25 == 0:
+        if epoch % 50 == 0:
             scheduler.step()
         test_data.update_embeddings(model,embedding_size,device)
         eer, threshold = get_eer(
