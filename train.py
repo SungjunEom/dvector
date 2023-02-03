@@ -11,6 +11,8 @@ import wandb
 import sys
 
 from model import DvectorModel
+from model import ResVector
+from model import CNN
 from train_dataset import TrainDataset
 from test_dataset import TestDataset
 from test import get_eer
@@ -27,7 +29,7 @@ def train():
     # hyperparameters
     classes = 1211
     learning_rate = 0.001
-    embedding_size = 64
+    embedding_size = 512
     n_mels = 40
     epochs = 150
     batch_size = 512
@@ -37,7 +39,7 @@ def train():
         model = torch.load('model_epoch'+str(start_epoch)+'.pth').to(device)
     except:
         start_epoch = 0
-        model = DvectorModel(
+        model = CNN(
             embedding_size=embedding_size, 
             class_size=classes,
             n_mels=n_mels,
@@ -48,7 +50,7 @@ def train():
 
     # wandb 설정
     os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-s2v11', entity='dvector')
+    wandb.init(project='dvector-original-s3v1', entity='dvector')
     wandb.config = {
         "learning_rate" : learning_rate,
         "epochs" : epochs,
@@ -80,8 +82,7 @@ def train():
             loss.backward()
             optimizer.step()
             wandb.log({"loss":loss})
-        if epoch % 50 == 0:
-            scheduler.step()
+        # scheduler.step()
         test_data.update_embeddings(model,embedding_size,device)
         eer, threshold = get_eer(
             test_dataset=test_data,
