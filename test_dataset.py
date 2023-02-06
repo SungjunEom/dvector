@@ -39,17 +39,21 @@ class TestDataset():
                 temp_embedding = torch.zeros(1,embedding_size)
                 fragments = np.linspace(0, wav.shape[0]-frames,5)
                 fragments = fragments.astype(np.int64)
+                x = torch.zeros(sample_num, frames)
                 for fragment in fragments:
                     if wav.shape[0] >= frames:
                         wav2 = wav[fragment:fragment+frames]
                     else:
                         wav2 = np.append(wav,np.zeros(frames - wav.shape[0]))
-                    x = torch.FloatTensor(wav2).to(device)
-                    x = torch.unsqueeze(x,0)
-                    x, _ = model(x)
-                    temp_embedding += x.cpu()
-                self.speaker_wav_paths[wav_path] = temp_embedding / sample_num
-
+                    x += torch.FloatTensor(wav2)
+                    # x = torch.FloatTensor(wav2).to(device)
+                    # x = torch.unsqueeze(x,0)
+                    # x, _ = model(x)
+                    # temp_embedding += x.cpu()
+                x = x.to(device)
+                x, _ = model(x)
+                x = torch.sum(x,dim=0) / sample_num
+                self.speaker_wav_paths[wav_path] = torch.unsqueeze(x.cpu(),0)
     def __len__(self):
         return len(self.speaker_wav_paths)
         
