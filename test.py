@@ -64,9 +64,9 @@ def enroll(checkpoint_path,audio_file):
     return x
 
 if __name__ == '__main__':
-    train_data_path = '/data/VoxCeleb1/train'
-    test_data_path = '/data/VoxCeleb1/test'
-    trial_path = '/data/VoxCeleb1/trials/trials.txt'
+    train_data_path = '/data/train'
+    test_data_path = '/data/test'
+    trial_path = '/data/trials/trials.txt'
     
     device = torch.device('cuda:1' if torch.cuda.is_available() else print('No GPU'))
     checkpoint_path = sys.argv[1]

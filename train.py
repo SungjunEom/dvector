@@ -11,8 +11,8 @@ import wandb
 import sys
 
 from model import DvectorModel
-from model import ResVector
 from model import CNN
+from model_res import ResNet_18
 from train_dataset import TrainDataset
 from test_dataset import TestDataset
 from test import get_eer
@@ -22,9 +22,9 @@ def train():
     print(device)
     
     # data paths
-    train_data_path = '/data/VoxCeleb1/train'
-    test_data_path = '/data/VoxCeleb1/test'
-    trial_path = '/data/VoxCeleb1/trials/trials.txt'
+    train_data_path = '/data/train'
+    test_data_path = '/data/test'
+    trial_path = '/data/trials/trials.txt'
 
     # hyperparameters
     classes = 1211
@@ -49,15 +49,15 @@ def train():
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
 
     # wandb 설정
-    os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
-    wandb.init(project='dvector-original-s3v1', entity='dvector')
-    wandb.config = {
-        "learning_rate" : learning_rate,
-        "epochs" : epochs,
-        "batch_size" : batch_size
-    }
-    wandb.define_metric("loss")
-    wandb.define_metric("eer")
+    # os.system('wandb login be65d6ddace6bf4e2441a82af03c144eb85bbe65')
+    # wandb.init(project='dvector-original-s3v1', entity='dvector')
+    # wandb.config = {
+    #     "learning_rate" : learning_rate,
+    #     "epochs" : epochs,
+    #     "batch_size" : batch_size
+    # }
+    # wandb.define_metric("loss")
+    # wandb.define_metric("eer")
 
     # speaker_id to label 딕셔너리를 만듦.
     speaker_ids = list(map(lambda x:int(x.split('id1')[1]), os.listdir(train_data_path)))
@@ -81,7 +81,7 @@ def train():
             loss = loss_fn(pred, y)
             loss.backward()
             optimizer.step()
-            wandb.log({"loss":loss})
+            # wandb.log({"loss":loss})
         # scheduler.step()
         test_data.update_embeddings(model,embedding_size,device)
         eer, threshold = get_eer(
@@ -91,7 +91,7 @@ def train():
             )
         print('Threshold: ' + str(threshold))
         print('EER: ' + str(eer))
-        wandb.log({"eer": eer})
+        # wandb.log({"eer": eer})
         if epoch % 100 == 0:
             checkpoint_path = 'model_epoch'+str(start_epoch+epoch+1)+'.pth'
             torch.save(model,checkpoint_path)
