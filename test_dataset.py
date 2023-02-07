@@ -50,11 +50,11 @@ class TestDataset():
                     # x = torch.unsqueeze(x,0)
                     # x, _ = model(x)
                     # temp_embedding += x.cpu()
-                x = torch.stack(*x,dim=0)
+                x = torch.stack(x,dim=0)
                 x = x.to(device)
                 x, _ = model(x)
                 x = torch.sum(x,dim=0) / sample_num
-                self.speaker_wav_paths[wav_path] = torch.unsqueeze(x.cpu(),0)
+                self.speaker_wav_paths[wav_path] = torch.unsqueeze(x.cpu(), 0)
     def __len__(self):
         return len(self.speaker_wav_paths)
         
